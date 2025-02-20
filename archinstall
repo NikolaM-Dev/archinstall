@@ -63,15 +63,15 @@ function _install() {
     _show_disk_partitions
 
     _log "Edit pacman.conf to improve perf..."
-    echo "Uncomment Color"
-    echo "Change ParallelDownloads to 10, ParallelDownloads = 10"
-    echo "Add after ParallelDownloads ILoveCandy"
+    echo "1. Uncomment Color"
+    echo "2. Change ParallelDownloads to 10, ParallelDownloads = 10"
+    echo "3. Add after ParallelDownloads ILoveCandy"
     sleep 2
 
     sudoedit /etc/pacman.conf
 
     _log "Installing essential packages..."
-    pacstrap -K /mnt base linux linux-firmware git vim
+    pacstrap -K /mnt base linux linux-firmware vim
 
     _log "Setting up the system..."
 
@@ -117,10 +117,10 @@ function _chroot_install() {
     passwd nikola
 
     _log "Installing minimal required dependencies..."
-    pacman -S sudo networkmanager grub
+    pacman -S sudo networkmanager grub efibootmgr
 
     _log "Add sudo permitions to the user..."
-    _log "uncomment %wheel ALL=(ALL:ALL) ALL"
+    echo "Uncomment %wheel ALL=(ALL:ALL) ALL"
     sleep 2
     EDITOR=vim visudo
 
@@ -134,9 +134,9 @@ function _chroot_install() {
     grub-mkconfig -o /boot/grub/grub.cfg
 
     _log "Run the following scripts"
-    echo "1. umount -R /mnt"
-    echo "2. reboot"
-    exit
+    echo "1. exit"
+    echo "2. umount -R /mnt"
+    echo "3. reboot"
 }
 
 function main() {
