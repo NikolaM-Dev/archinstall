@@ -9,7 +9,7 @@ function _wait() {
 }
 
 function _log() {
-    echo ""
+    clear
     echo ""
     echo "--------------------------------------------------------------------"
     echo $1
