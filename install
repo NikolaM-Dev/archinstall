@@ -5,7 +5,7 @@ function _setup_font() {
 }
 
 function _wait() {
-    sleep 2
+    sleep 1
 }
 
 function _log() {
