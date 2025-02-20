@@ -133,21 +133,16 @@ function _chroot_install() {
     _log "Config GRUB"
     grub-mkconfig -o /boot/grub/grub.cfg
 
-    _log "Reboot"
-    sleep 1
+    _log "Run the following scripts"
+    echo "1. umount -R /mnt"
+    echo "2. reboot"
     exit
-}
-
-function _reboot() {
-    _log "Rebooting..."
-    umount -R /mnt
-    reboot
 }
 
 function main() {
     if [ $# -eq 0 ]; then
-        echo -e "- [I]nstall\n- [C]hroot Install\n- [R]eboot"
-        echo "Usage: $0 [-i] [-c] [-r]"
+        echo -e "- [I]nstall\n- [C]hroot Install"
+        echo "Usage: $0 [-i] [-c]"
         exit 1
     fi
 
@@ -158,9 +153,6 @@ function main() {
               ;;
             c)
               _chroot_install
-              ;;
-            r)
-              _reboot
               ;;
             *)
               echo "Usage: $0 [-i] [-c] [-r]"
