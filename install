@@ -22,7 +22,6 @@ function _log() {
 function _show_disk_partitions() {
     _log "Showing /dev/sda state..."
     lsblk
-    _wait
 }
 
 function main() {
@@ -70,8 +69,6 @@ function main() {
 
     _log "Edit pacman.conf to improve perf..."
     _log "Color, ILoveCandy, ParallelDownloads = 10"
-
-    _wait
 
     sudoedit /etc/pacman.conf
 
