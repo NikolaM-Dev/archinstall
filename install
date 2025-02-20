@@ -8,73 +8,79 @@ function _wait() {
     sleep 4
 }
 
+function _log() {
+    echo ""
+    echo "--------------------------------------------------------------------"
+    echo $0
+    echo ""
+    echo "--------------------------------------------------------------------"
+}
+
 function _show_disk_partitions() {
-    echo "Showing /dev/sda state..."
+    _log "Showing /dev/sda state..."
     lsblk
     _wait
 }
 
 function main() {
-    echo "Setting up vim as $EDITOR"
+    _log "Setting up vim as $EDITOR"
     export EDITOR=vim
 
-    echo "Setting up console font..."
+    _log "Setting up console font..."
     setup_font
 
-    echo "Updatting keyring..."
+    _log "Updatting keyring..."
     pacman -Sy archlinux-keyring --noconfirm
 
     _show_disk_partitions
 
-    echo "Format the partitions with cfdisk"
+    _log "Format the partitions with cfdisk"
     cfdisk /dev/sda
 
     _show_disk_partitions
 
-    echo "Formatting partitions..."
+    _log "Formatting partitions..."
 
-    echo "Formatting boot partition (sda1)"
+    _log "Formatting boot partition (sda1)"
     mkfs.fat -F 32 /dev/sda1
 
-    echo "Formatting SWAP partition (sda1)"
+    _log "Formatting SWAP partition (sda1)"
     mkswap /dev/sda2
 
-    echo "Formatting root partition (sda3)"
+    _log "Formatting root partition (sda3)"
     mkfs.ext4 /dev/sda3
 
     _show_disk_partitions
 
-    echo "Mountting paratitions..."
+    _log "Mountting paratitions..."
 
-    echo "Mounting boot partition (sda1)"
+    _log "Mounting boot partition (sda1)"
     mount --mkdir /dev/sda1 /mnt/boot
 
-    echo "Mounting SWAP partition (sda2)"
+    _log "Mounting SWAP partition (sda2)"
     swapon /dev/sda2
 
-    echo "Mounting root partition (sda3)"
+    _log "Mounting root partition (sda3)"
     mount /dev/sda3 /mnt
 
     _show_disk_partitions
 
-    echo "Edit pacman.conf to improve perf..."
-    echo "Color"
-    echo "ILoveCandy"
-    echo "ParallelDownloads = 10"
+    _log "Edit pacman.conf to improve perf..."
+    _log "Color, ILoveCandy, ParallelDownloads = 10"
 
     _wait
 
     sudoedit /etc/pacman.conf
 
-    echo "Installing essential packages..."
-    packstrap -K /mnt base linux linux-firmware
+    _log "Installing essential packages..."
+    pacstrap -K /mnt base linux linux-firmware
 
-    echo "Setting up the system..."
+    _log "Setting up the system..."
 
-    echo "Fstab..."
+    _log "Fstab..."
     genfstab -U /mnt >> /mnt/etc/fstab
 
-    echo "Chroot..."
+    _log "Chroot..."
     arch-chroot /mnt
 }
 
