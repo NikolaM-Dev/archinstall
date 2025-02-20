@@ -76,7 +76,7 @@ function main() {
     sudoedit /etc/pacman.conf
 
     _log "Installing essential packages..."
-    pacstrap -K /mnt base linux linux-firmware
+    pacstrap -K /mnt base linux linux-firmware git
 
     _log "Setting up the system..."
 
