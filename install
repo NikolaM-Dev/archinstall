@@ -29,7 +29,7 @@ function main() {
     export EDITOR=vim
 
     _log "Setting up console font..."
-    setup_font
+    _setup_font
 
     _log "Updatting keyring..."
     pacman -Sy archlinux-keyring --noconfirm
