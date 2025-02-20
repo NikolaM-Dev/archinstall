@@ -1,0 +1,173 @@
+#!/usr/bin/env bash
+
+function _setup_font() {
+    setfont ter-v22b
+}
+
+function _log() {
+    echo "--------------------------------------------------------------------"
+    echo ""
+    echo $1
+    echo ""
+    echo "--------------------------------------------------------------------"
+    echo ""
+}
+
+function _show_disk_partitions() {
+    _log "Showing /dev/sda state..."
+    lsblk
+    sleep 2
+}
+
+function _install() {
+    _log "Setting up vim as EDITOR"
+    export EDITOR=vim
+
+    _log "Setting up console font..."
+    _setup_font
+
+    _log "Updatting keyring..."
+    pacman -Sy archlinux-keyring --noconfirm
+
+    _show_disk_partitions
+
+    _log "Format the partitions with cfdisk"
+    cfdisk /dev/sda
+
+    _show_disk_partitions
+
+    _log "Formatting partitions..."
+
+    _log "Formatting boot partition (sda1)"
+    mkfs.fat -F 32 /dev/sda1
+
+    _log "Formatting SWAP partition (sda1)"
+    mkswap /dev/sda2
+
+    _log "Formatting root partition (sda3)"
+    mkfs.ext4 /dev/sda3
+
+    _show_disk_partitions
+
+    _log "Mountting paratitions..."
+
+    _log "Mounting boot partition (sda1)"
+    mount --mkdir /dev/sda1 /mnt/boot
+
+    _log "Mounting SWAP partition (sda2)"
+    swapon /dev/sda2
+
+    _log "Mounting root partition (sda3)"
+    mount /dev/sda3 /mnt
+
+    _show_disk_partitions
+
+    _log "Edit pacman.conf to improve perf..."
+    echo "Uncomment Color"
+    echo "Change ParallelDownloads to 10, ParallelDownloads = 10"
+    echo "Add after ParallelDownloads ILoveCandy"
+    sleep 2
+
+    sudoedit /etc/pacman.conf
+
+    _log "Installing essential packages..."
+    pacstrap -K /mnt base linux linux-firmware git vim
+
+    _log "Setting up the system..."
+
+    _log "Fstab..."
+    genfstab -U /mnt >> /mnt/etc/fstab
+
+    _log "Chroot..."
+    arch-chroot /mnt
+}
+
+function _chroot_install() {
+    _log "Setting up the system..."
+
+    _log "Setting up vim as EDITOR"
+    export EDITOR=vim
+
+    _log "Time..."
+    ln -sf /usr/share/zoneinfo/America/Bogota /etc/localtime
+    hwclock --systohc
+
+    _log "Localization..."
+    echo "Uncomment en_US.UTF-8 UTF 8"
+    sleep 2
+    vim /etc/locale.gen
+
+    _log "Making locale.conf..."
+    echo "LANG=en_US.UTF-8" > /etc/locale.conf
+    cat /etc/locale.conf
+
+    _log "Hostname..."
+    echo "nikola" > /etc/hostname
+    cat /etc/hostname
+
+    _log "Root password..."
+    passwd
+
+    _log "Add nikola user..."
+    useradd -m -G wheel -s /bin/bash nikola
+
+    _log "nikola password..."
+    passwd nikola
+
+    _log "Installing minimal required dependencies..."
+    pacman -S sudo networkmanager grub
+
+    _log "Add sudo permitions to the user..."
+    _log "uncomment %wheel ALL=(ALL:ALL) ALL"
+    EDITOR=vim visudo
+
+
+    # _log "Network configuration..."
+    # systemctl enable NetworkManager
+    #
+    # _log "Bootloader..."
+    # grub-install --target=x86_64-efi --efi-directory=/boot
+    #
+    # _log "Config GRUB"
+    # grub-mkconfig -o /boot/grub/grub.cfg
+
+    _log "Reboot"
+    sleep 1
+    exit
+}
+
+function _reboot() {
+    umount -R /mnt
+    reboot
+}
+
+function main() {
+    if [ $# -eq 0 ]; then
+        echo -e "- [I]nstall\n- [C]hroot Install\n- [R]eboot"
+        echo "Usage: $0 [-i] [-c] [-r]"
+        exit 1
+    fi
+
+    while getopts "icr" opt; do
+        case $opt in
+            i)
+              # _install
+              echo "i"
+              ;;
+            c)
+              # _chroot_install
+              echo "c"
+              ;;
+            r)
+              # _reboot
+              echo "r"
+              ;;
+            *)
+              echo "Usage: $0 [-i] [-c] [-r]"
+              exit 1
+              ;;
+        esac
+    done
+}
+
+main "$@"
