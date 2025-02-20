@@ -20,8 +20,6 @@ function _show_disk_partitions() {
 }
 
 function _install() {
-    _log "Installing..."
-
     _log "Setting up vim as EDITOR"
     export EDITOR=vim
 
@@ -48,6 +46,8 @@ function _install() {
 
     _log "Formatting root partition (sda3)"
     mkfs.ext4 /dev/sda3
+
+    _show_disk_partitions
 
     _log "Mountting paratitions..."
 
@@ -83,8 +83,6 @@ function _install() {
 }
 
 function _chroot_install() {
-    _log "Chroot Installing..."
-
     _log "Setting up the system..."
 
     _log "Setting up vim as EDITOR"
@@ -121,17 +119,17 @@ function _chroot_install() {
 
     _log "Add sudo permitions to the user..."
     _log "uncomment %wheel ALL=(ALL:ALL) ALL"
-    sleep 2
     EDITOR=vim visudo
 
-    _log "Network configuration..."
-    systemctl enable NetworkManager
 
-    _log "Bootloader..."
-    grub-install --target=x86_64-efi --efi-directory=/boot
-
-    _log "Config GRUB"
-    grub-mkconfig -o /boot/grub/grub.cfg
+    # _log "Network configuration..."
+    # systemctl enable NetworkManager
+    #
+    # _log "Bootloader..."
+    # grub-install --target=x86_64-efi --efi-directory=/boot
+    #
+    # _log "Config GRUB"
+    # grub-mkconfig -o /boot/grub/grub.cfg
 
     _log "Reboot"
     sleep 1
@@ -139,7 +137,6 @@ function _chroot_install() {
 }
 
 function _reboot() {
-    _log "Rebooting..."
     umount -R /mnt
     reboot
 }
@@ -154,13 +151,16 @@ function main() {
     while getopts "icr" opt; do
         case $opt in
             i)
-              _install
+              # _install
+              echo "i"
               ;;
             c)
-              _chroot_install
+              # _chroot_install
+              echo "c"
               ;;
             r)
-              _reboot
+              # _reboot
+              echo "r"
               ;;
             *)
               echo "Usage: $0 [-i] [-c] [-r]"
