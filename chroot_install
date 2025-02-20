@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function _wait() {
-    sleep 2
+    sleep 1
 }
 
 function _log() {
@@ -12,7 +12,7 @@ function _log() {
     echo "--------------------------------------------------------------------"
     echo ""
 
-    sleep 2
+    _wait
 }
 
 function main() {
