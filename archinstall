@@ -128,7 +128,7 @@ function _chroot_install() {
     systemctl enable NetworkManager
 
     _log "Bootloader..."
-    grub-install --target=x86_64-efi --efi-directory=/boot
+    grub-install --target=x86_64-efi --efi-directory=/mnt/boot
 
     _log "Config GRUB"
     grub-mkconfig -o /boot/grub/grub.cfg
