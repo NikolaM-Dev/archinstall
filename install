@@ -5,7 +5,7 @@ function _setup_font() {
 }
 
 function _wait() {
-    sleep 3
+    sleep 2
 }
 
 function _log() {
@@ -15,6 +15,8 @@ function _log() {
     echo ""
     echo "--------------------------------------------------------------------"
     echo ""
+
+    _wait
 }
 
 function _show_disk_partitions() {
@@ -83,62 +85,6 @@ function main() {
 
     _log "Chroot..."
     arch-chroot /mnt
-
-    _log "Time..."
-    ln -sf /usr/share/zoneinfo/America/Bogota /etc/localtime
-    hwclock --systohc
-
-    _log "Localization..."
-    _log "uncomment en_US.UTF-8 UTF 8"
-    vim /etc/locale.gen
-
-    _log "Making locale.conf..."
-    echo "LANG=en_US.UTF-8" > /etc/locale.conf
-    cat /etc/locale.conf
-
-    _log "Hostname..."
-    echo "nikola" > /etc/hostname
-    cat /etc/hostname
-
-    _log "Root password..."
-    passwd
-
-    _log "Add nikola user..."
-    useradd -m -G wheel -s /bin/bash nikola
-
-    _log "nikola password..."
-    passwd nikola
-
-    _log "Add sudo permitions to the user..."
-    _log "uncomment %wheel ALL=(ALL:ALL) ALL"
-    EDITOR=vim visudo
-
-    _log "Network configuration..."
-
-    echo "continue developing"
-    # #+begin_src bash
-    # systemctl enable NetworkManager
-    # #+end_src
-    # ** Bootloader
-    # #+begin_src bash
-    # grub-install --target=x86_64-efi --efi-directory=/mnt/boot
-    # os-prober
-    # grub-mkconfig -o /boot/grub/grub.cfg
-    # EDITOR=vim sudoedit /etc/default/grub
-    # GRUB_TIMEOUT=3600
-    # # uncomment GRUB_DISABLE_OS_PROBER=false
-    # grub-mkconfig -o /boot/grub/grub.cfg
-    # #+end_src
-    # ** Reboot
-    # #+begin_src bash
-    # exit
-    # umount -R /mnt
-    # reboot
-    # #+end_src
-    #
-    # * Post install
-    # ** Update =pacman.conf=
-    # #+begin_src bash
 }
 
 main

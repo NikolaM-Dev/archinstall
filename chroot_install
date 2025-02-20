@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function _wait() {
-    sleep 3
+    sleep 2
 }
 
 function _log() {
@@ -16,9 +16,6 @@ function _log() {
 }
 
 function main() {
-    _log "Setting up vim as $EDITOR"
-    export EDITOR=vim
-
     _log "Setting up the system..."
 
     _log "Time..."
@@ -48,7 +45,7 @@ function main() {
 
     _log "Add sudo permitions to the user..."
     _log "uncomment %wheel ALL=(ALL:ALL) ALL"
-    visudo
+    EDITOR=vim visudo
 
     _log "Network configuration..."
 
