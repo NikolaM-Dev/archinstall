@@ -20,6 +20,8 @@ function _show_disk_partitions() {
 }
 
 function _install() {
+    _log "Installing..."
+
     _log "Setting up vim as EDITOR"
     export EDITOR=vim
 
@@ -83,6 +85,8 @@ function _install() {
 }
 
 function _chroot_install() {
+    _log "Chroot Installing..."
+
     _log "Setting up the system..."
 
     _log "Setting up vim as EDITOR"
@@ -137,6 +141,7 @@ function _chroot_install() {
 }
 
 function _reboot() {
+    _log "Rebooting..."
     umount -R /mnt
     reboot
 }
@@ -151,16 +156,13 @@ function main() {
     while getopts "icr" opt; do
         case $opt in
             i)
-              # _install
-              echo "i"
+              _install
               ;;
             c)
-              # _chroot_install
-              echo "c"
+              _chroot_install
               ;;
             r)
-              # _reboot
-              echo "r"
+              _reboot
               ;;
             *)
               echo "Usage: $0 [-i] [-c] [-r]"
