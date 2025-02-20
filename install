@@ -16,7 +16,7 @@ function _log() {
     echo "--------------------------------------------------------------------"
     echo ""
 
-    _wait
+    # _wait
 }
 
 function _show_disk_partitions() {
@@ -25,7 +25,7 @@ function _show_disk_partitions() {
 }
 
 function main() {
-    _log "Setting up vim as $EDITOR"
+    _log "Setting up vim as EDITOR"
     export EDITOR=vim
 
     _log "Setting up console font..."

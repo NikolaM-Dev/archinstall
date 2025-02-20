@@ -12,11 +12,14 @@ function _log() {
     echo "--------------------------------------------------------------------"
     echo ""
 
-    _wait
+    # _wait
 }
 
 function main() {
     _log "Setting up the system..."
+
+    _log "Setting up vim as EDITOR"
+    export EDITOR=vim
 
     _log "Time..."
     ln -sf /usr/share/zoneinfo/America/Bogota /etc/localtime
@@ -47,32 +50,21 @@ function main() {
     _log "uncomment %wheel ALL=(ALL:ALL) ALL"
     EDITOR=vim visudo
 
-    _log "Network configuration..."
+    _log "Installing minimal required dependencies..."
+    pacman -S sudo networkmanager grub
 
-    echo "continue developing"
-    # #+begin_src bash
-    # systemctl enable NetworkManager
-    # #+end_src
-    # ** Bootloader
-    # #+begin_src bash
-    # grub-install --target=x86_64-efi --efi-directory=/mnt/boot
-    # os-prober
-    # grub-mkconfig -o /boot/grub/grub.cfg
-    # EDITOR=vim sudoedit /etc/default/grub
-    # GRUB_TIMEOUT=3600
-    # # uncomment GRUB_DISABLE_OS_PROBER=false
-    # grub-mkconfig -o /boot/grub/grub.cfg
-    # #+end_src
-    # ** Reboot
-    # #+begin_src bash
-    # exit
-    # umount -R /mnt
-    # reboot
-    # #+end_src
-    #
-    # * Post install
-    # ** Update =pacman.conf=
-    # #+begin_src bash
+    _log "Network configuration..."
+    systemctl enable NetworkManager
+
+    _log "Bootloader..."
+    grub-install --target=x86_64-efi --efi-directory=/boot
+
+    _log "Config GRUB"
+    grub-mkconfig -o /boot/grub/grub.cfg
+
+    _log "Reboot"
+    sleep 1
+    exit
 }
 
 main
