@@ -117,7 +117,7 @@ function _chroot_install() {
     passwd nikola
 
     _log "Installing minimal required dependencies..."
-    pacman -S sudo networkmanager grub efibootmgr
+    pacman -S sudo networkmanager grub efibootmgr git
 
     _log "Add sudo permitions to the user..."
     echo "Uncomment %wheel ALL=(ALL:ALL) ALL"
@@ -128,7 +128,7 @@ function _chroot_install() {
     systemctl enable NetworkManager
 
     _log "Bootloader..."
-    grub-install --target=x86_64-efi --efi-directory=/mnt/boot
+    grub-install --target=x86_64-efi --efi-directory=/mnt/boot --bootloader-id=grub --removable
 
     _log "Config GRUB"
     grub-mkconfig -o /boot/grub/grub.cfg
